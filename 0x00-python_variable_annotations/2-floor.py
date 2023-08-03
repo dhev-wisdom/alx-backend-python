@@ -3,9 +3,11 @@
 Module demostrates basic Python variable annotation
 """
 
+import math
 
-def add(a: float, b: float) -> float:
+
+def floor(n: float) -> float:
     """
     typed python function
     """
-    return a + b
+    return math.floor(n)
