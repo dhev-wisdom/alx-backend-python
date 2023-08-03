@@ -3,5 +3,6 @@
 Module demostrates basic Python variable annotation
 """
 
+
 def add(a: float, b: float) -> float:
-    return a + b
+    return a + i
