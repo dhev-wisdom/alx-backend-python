@@ -6,7 +6,7 @@ Module demostrates basic Python variable annotation
 import math
 
 
-def floor(n: float) -> float:
+def floor(n: float) -> int:
     """
     typed python function
     """
