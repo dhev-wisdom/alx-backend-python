@@ -11,7 +11,7 @@ T = TypeVar('T')
 def safely_get_value(dct: Mapping,
                      key: Any, default: Optional[T] = None) -> Union[Any, T]:
     """
-    typex python functio 
+    typex python function
     """
     if key in dct:
         return dct[key]
