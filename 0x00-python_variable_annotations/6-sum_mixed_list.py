@@ -6,7 +6,7 @@ Module demostrates typing in Python
 from typing import List
 
 
-def sum_mixed_list(mxd_lst: List[int | float]) -> float:
+def sum_mixed_list(mxd_lst: List[int, float]) -> float:
     """
     typed function
     """
