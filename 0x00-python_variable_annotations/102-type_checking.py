@@ -7,7 +7,7 @@ Module demotrates typing in Python
 from typing import Tuple, List
 
 def zoom_array(lst: Tuple[int], factor: int = 2) -> List[int]:
-    zoomed_in: Tuple = [
+    zoomed_in: List[int] = [
         item for item in lst
         for i in range(factor)
     ]
