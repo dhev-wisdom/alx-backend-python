@@ -3,11 +3,11 @@
 Module demostrates typing in Python
 """
 
+from typing import List
 
-def sum_list(input_list: list[float]) -> float:
+
+def sum_list(input_list: List[float]) -> float:
     """
     typed function
     """
-    sum_: float = sum(input_list)
-
-    return sum_
+    return sum(input_list)
