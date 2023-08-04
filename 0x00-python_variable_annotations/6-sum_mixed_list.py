@@ -3,14 +3,12 @@
 Module demostrates typing in Python
 """
 
+from typing import List
 
-def sum_mixed_list(mxd_lst: list[int | float]) -> float:
+
+def sum_mixed_list(mxd_lst: List[int | float]) -> float:
     """
     typed function
     """
-    sum_: float = 0.0
 
-    for i in range(len(mxd_lst)):
-        sum += mxd_lst[i]
-
-    return sum_
+    return float(sum(mxd_lst))
