@@ -3,9 +3,11 @@
 Module demostrate Python as a typed language
 """
 
-def to_kv(k: str, v: int | float) -> tuple[str, float]:
+from typing import Tuple, Union
+
+
+def to_kv(k: str, v: Union[int, float]) -> Tuple[str, float]:
     """
     advanced typed function
     """
-    t : tuple[str, float] = (k, float(v**2))
-    return t
+    return k, v ** 2.0
