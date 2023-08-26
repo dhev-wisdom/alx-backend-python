@@ -14,9 +14,9 @@ class TestAccessNestedMap(unittest.TestCase):
     and performs unittest with @parameterized.expand decorator
     """
     @parameterized.expand([
-            ("first", {"a": 1}, ["a"], 1),
-            ("second", {"a": {"b": 2}}, ["a"], {"b": 2}),
-            ("third", {"a": {"b": 2}}, ["a", "b"], 2),
+            ("first", {"a": 1}, ("a",), 1),
+            ("second", {"a": {"b": 2}}, ("a",), {"b": 2}),
+            ("third", {"a": {"b": 2}}, ("a", "b"), 2),
             ])
     def test_access_nested_map(self, name, param_1, param_2, expected):
         """
