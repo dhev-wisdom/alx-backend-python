@@ -1,4 +1,4 @@
-#!/usr/bin/env  python3
+#!/usr/bin/env python3
 """
 Testing a function from a python script
 """
