@@ -5,7 +5,9 @@ Testing a function from a python script
 
 from parameterized import parameterized
 import unittest
+from unittest.mock import Mock, patch
 access_nested_map = __import__("utils").access_nested_map
+get_json = __import__("utils").get_json
 
 
 class TestAccessNestedMap(unittest.TestCase):
@@ -37,6 +39,31 @@ class TestAccessNestedMap(unittest.TestCase):
         with self.assertRaises(KeyError):
             result = access_nested_map(param_1, param_2)
             self.assertEqual(result, expected)
+
+
+class TestGetJson(unittest.TestCase):
+    """
+    implements the TestGetJson.test_get_json method
+    to test that utils.get_json returns the expected result.
+    """
+    @patch("utils.requests.get")
+    def test_get_json(self, mock_requests_get):
+        """
+        Test the return of requests.get method
+        """
+        test_url_payload_pairs = [
+            ("http://example.com", {"payload": True}),
+            ("http://holberton.io", {"payload": False})
+            ]
+        mock_response = Mock()
+        mock_response.json.return_value = test_url_payload_pairs[0][1]
+        mock_requests_get.return_value = mock_response
+
+        for test_url, test_payload in test_url_payload_pairs:
+            result = get_json(test_url)
+
+            mock_requests_get.assert_called_once_with(test_url)
+            self.assertEqual(result, test_payload)
 
 
 if __name__ == "__main__":
