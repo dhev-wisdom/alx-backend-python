@@ -6,8 +6,7 @@ Testing a function from a python script
 from parameterized import parameterized
 import unittest
 from unittest.mock import Mock, patch
-access_nested_map = __import__("utils").access_nested_map
-get_json = __import__("utils").get_json
+from utils import access_nested_map, get_json, memoize
 
 
 class TestAccessNestedMap(unittest.TestCase):
@@ -64,6 +63,42 @@ class TestGetJson(unittest.TestCase):
 
             mock_requests_get.assert_called_once_with(test_url)
             self.assertEqual(result, test_payload)
+
+
+class TestMemoize(unittest.TestCase):
+    """
+    """
+    @patch("utils.TestClass.a_method")
+    def test_memoize(self, mock_a_method):
+        """
+        """
+
+        class TestClass():
+            """
+            class TestClass
+            """
+            def a_method(self):
+                """
+                a_method method
+                """
+                return 42
+
+            @memoize
+            def a_property(self):
+                """
+                a_property method
+                """
+                return self.a_method()
+
+        mock_a_method.return_value = 42
+        obj = TestClass()
+        result1 = obj.a_property()
+        result2 = obj.a_property()
+
+        mock_a_method.assert_called_once()
+
+        self.assertEqual(result1, 42)
+        self.assertEqual(result2, 42)
 
 
 if __name__ == "__main__":
