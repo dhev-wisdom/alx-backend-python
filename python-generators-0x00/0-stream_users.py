@@ -12,4 +12,4 @@ def stream_users():
     connection.close
 
 if __name__ == "__main__":
-    stream_users = stream_users
+    stream_users = stream_users()

@@ -2,13 +2,19 @@
 import mysql.connector
 import csv
 import uuid
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+user = os.getenv("DB_USER")
+password = os.getenv("DB_PASSWORD")
 
 def connect_db():
     try:
         connection = mysql.connector.connect(
             host= 'localhost',
-            user= 'root',
-            password= 'Wisdom20032000$',
+            user= user,
+            password= password,
         )
         return connection
     except mysql.connector.Error as err:
