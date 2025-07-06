@@ -24,9 +24,9 @@ def stream_users_in_batches(batch_size):
     connection.close()
 
 def batch_processing(batch_size):
-    """function processes each batch to filter users over the age of25"""
+    """function processes each batch to filter users over the age of 25"""
     for batch in stream_users_in_batches(batch_size):
-        filteredUsers = (user for user in batch if user[3] > 25)
+        filteredUsers = [user for user in batch if user[3] > 25]
         yield filteredUsers
 
 if __name__ == "__main__":

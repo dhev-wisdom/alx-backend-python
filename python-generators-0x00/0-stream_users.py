@@ -11,4 +11,5 @@ def stream_users():
     cursor.close()
     connection.close
 
-stream_users = stream_users
+if __name__ == "__main__":
+    stream_users = stream_users
