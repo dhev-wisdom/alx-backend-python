@@ -6,7 +6,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 #### decorator to lof SQL queries
 
 """ YOUR CODE GOES HERE"""
-def log_queries(func):
+def log_queries():
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         query = kwargs.get("query")
