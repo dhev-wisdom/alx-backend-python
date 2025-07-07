@@ -1,17 +1,18 @@
 import sqlite3
 import functools
-import logging
+# import logging
+from datetime import datetime
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 #### decorator to lof SQL queries
-
-""" YOUR CODE GOES HERE"""
-def log_queries():
+def log_queries(func):
+    """ YOUR CODE GOES HERE"""
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         query = kwargs.get("query")
-        # print(f"[LOG] {query}")
-        logging.info(query)
+        print(f"[{datetime.now()}]: {query}")
+        # logging.info(query)
         return func(*args, **kwargs)
     return wrapper
         
