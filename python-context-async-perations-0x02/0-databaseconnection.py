@@ -2,7 +2,7 @@
 import sqlite3
 
 class DatabaseConnection:
-    def __init(self, db_name='users'):
+    def __init(self, db_name='users.db'):
         self.db_name = db_name
         self.conn = None
 
