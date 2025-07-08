@@ -23,3 +23,11 @@ class ExecuteQuery:
         if type:
             print(f"An error occured: {type}")
         return False
+
+if __name__ == "__main__":
+    query = "SELECT * FROM users WHERE age > ?"
+    age = (25,)
+
+    with ExecuteQuery(query, age) as result:
+        for row in result:
+            print(row)
