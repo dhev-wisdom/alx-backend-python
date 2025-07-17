@@ -61,13 +61,15 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.isAuthenticated',
     ],
-    'DEFUALT_AUTHENTICATION_CLASSES': [
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
-    ]
+    ],
 }
 
 ROOT_URLCONF = 'messaging_app.urls'
+
+AUTH_USER_MODEL = 'chats.User'
 
 TEMPLATES = [
     {
@@ -94,7 +96,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    },
+    # 'hdhdh': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
 }
 
 
