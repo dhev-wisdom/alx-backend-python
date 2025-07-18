@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, filters, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .models import User, Conversation, Message
@@ -13,6 +13,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     serializer_class = UserSerializer
     queryset = User.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
     
 
 class ConversationViewSet(viewsets.ModelViewSet):
@@ -51,6 +52,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     """
     serializer_class = MessageSerializer
     queryset = Message.objects.all()
+    filter_backends = [filters.SearchFilter]
 
     def create(self, request, *args, **kwargs):
         """
@@ -59,20 +61,25 @@ class MessageViewSet(viewsets.ModelViewSet):
         Validates existence of conversation and sender before creating the message.
         Returns the created message data.
         """
-        conversation_id = request.data.get("conversation_id")
-        message_body = request.data.get("message_body")
-        sender_id = request.data.get("sender_id")
+        # conversation_id = request.data.get("conversation_id")
+        # message_body = request.data.get("message_body")
+        # sender_id = request.data.get("sender_id")
 
-        if not conversation_id or not sender_id:
-            return Response({"error": "Both conversation_id and sender_id are needed"}, status=404)
+        # if not conversation_id or not sender_id:
+        #     return Response({"error": "Both conversation_id and sender_id are needed"}, status=404)
         
-        conversation = get_object_or_404(Conversation, conversation_id=conversation_id)
-        sender = get_object_or_404(User, user_id=sender_id)
+        # conversation = get_object_or_404(Conversation, conversation_id=conversation_id)
+        # sender = get_object_or_404(User, user_id=sender_id)
 
-        message = Message.objects.create(
-            sender=sender,
-            conversation=conversation,
-            message_body=message_body
-        )
-        serializer = self.get_serializer(message)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # message = Message.objects.create(
+        #     sender=sender,
+        #     conversation=conversation,
+        #     message_body=message_body
+        # )
+        # serializer = self.get_serializer(message)
+        # return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=201)

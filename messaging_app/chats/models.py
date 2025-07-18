@@ -6,16 +6,16 @@ import uuid
 class User(AbstractUser):
     """custom `User` class defined off of django default user `AbstractUser`"""
     user_id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    password = models.CharField(max_length=128, verbose_name="Password (Hashed)")
+    # password = models.CharField(max_length=128, verbose_name="Password (Hashed)")
     email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=15, unique=True)
+    phone_number = models.CharField(max_length=15)
     created_at = models.DateTimeField(auto_now_add=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
-    def save(self, *args, **kwargs):
-        self.password = make_password(self.password)
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     self.password = make_password(self.password)
+    #     super().save(*args, **kwargs)
 
     def __str__(self):
         """define the string representation of the custom `User` model"""
