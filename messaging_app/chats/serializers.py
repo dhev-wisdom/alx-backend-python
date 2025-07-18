@@ -6,6 +6,9 @@ class UserSerializer(serializers.ModelSerializer):
     Serialize the User model to simple (JSON) form
     that can be read by the frontend
     """
+    email = serializers.CharField()
+    phone_number = serializers.CharField()
+    
     class Meta:
         model = User
         fields = ['user_id', 'email', 'phone_number']
