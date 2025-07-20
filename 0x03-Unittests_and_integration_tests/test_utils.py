@@ -15,16 +15,13 @@ class TestAccessNestedMap(unittest.TestCase):
     and performs unittest with @parameterized.expand decorator
     """
     @parameterized.expand([
-            ({"a": 1}, ("a",), 1),
-            ({"a": {"b": 2}}, ("a",), {"b": 2}),
-            ({"a": {"b": 2}}, ("a", "b"), 2),
-            ])
+        ({"a": 1}, ("a",), 1),
+        ({"a": {"b": 2}}, ("a",), {"b": 2}),
+        ({"a": {"b": 2}}, ("a", "b"), 2),
+    ])
     def test_access_nested_map(self, param_1, param_2, expected):
-        """
-        method to test that the method returns what it is supposed to.
-        """
-        result = access_nested_map(param_1, param_2)
-        self.assertEqual(result, expected)
+        """ method to test that the method returns what it is supposed to."""
+        self.assertEqual(access_nested_map(param_1, param_2), expected)
 
     @parameterized.expand([
         ({}, ("a",), KeyError("a")),
