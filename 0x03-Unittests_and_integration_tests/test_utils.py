@@ -19,22 +19,21 @@ class TestAccessNestedMap(unittest.TestCase):
         ({"a": {"b": 2}}, ("a",), {"b": 2}),
         ({"a": {"b": 2}}, ("a", "b"), 2),
     ])
-    def test_access_nested_map(self, param_1, param_2, expected):
+    def test_access_nested_map(self, nested_map, path, expected):
         """ method to test that the method returns what it is supposed to."""
-        self.assertEqual(access_nested_map(param_1, param_2), expected)
+        self.assertEqual(access_nested_map(nested_map, path), expected)
 
     @parameterized.expand([
-        ({}, ("a",), KeyError("a")),
-        ({"a": 1}, ("a", "b"), KeyError("b")),
+        ({}, ("a",)),
+        ({"a": 1}, ("a", "b")),
         ])
-    def test_access_nested_map_exception(self, param_1, param_2, expected):
+    def test_access_nested_map_exception(self, param_1, param_2):
         """
         Use the assertRaises context manager to test that
         a KeyError is raised for the following inputs
         """
         with self.assertRaises(KeyError):
-            result = access_nested_map(param_1, param_2)
-            self.assertEqual(result, expected)
+            access_nested_map(param_1, param_2)
 
 
 class TestGetJson(unittest.TestCase):
@@ -42,24 +41,20 @@ class TestGetJson(unittest.TestCase):
     implements the TestGetJson.test_get_json method
     to test that utils.get_json returns the expected result.
     """
+    @parameterized.expand([
+        ("http://example.com", {"payload": True}),
+        ("http://holberton.io", {"payload": False})
+    ])
     @patch("utils.requests.get")
-    def test_get_json(self, mock_requests_get):
-        """
-        Test the return of requests.get method
-        """
-        test_url_payload_pairs = [
-            ("http://example.com", {"payload": True}),
-            ("http://holberton.io", {"payload": False})
-            ]
+    def test_get_json(self, test_url, test_payload, mock_requests_get):
+        """Test the return of requests.get method"""
         mock_response = Mock()
-        mock_response.json.return_value = test_url_payload_pairs[0][1]
+        mock_response.json.return_value = test_payload
         mock_requests_get.return_value = mock_response
 
-        for test_url, test_payload in test_url_payload_pairs:
-            result = get_json(test_url)
-
-            mock_requests_get.assert_called_once_with(test_url)
-            self.assertEqual(result, test_payload)
+        result = get_json(test_url)
+        mock_requests_get.assert_called_once_with(test_url)
+        self.assertEqual(result, test_payload)
 
 
 class TestMemoize(unittest.TestCase):
