@@ -13,6 +13,20 @@ from fixtures import TEST_PAYLOAD
 
 
 class TestGithubOrgClient(unittest.TestCase):
+    def test_public_repos_url(self):
+        # Define the fake payload to return
+        test_payload = {"repos_url": "https://someurl.com/org/repos"}
+
+        # Patch GithubOrgClient.org property to return test_payload
+        with patch.object(GithubOrgClient, 'org', new_callable=PropertyMock) as mock_org:
+            mock_org.return_value = test_payload
+
+            client = GithubOrgClient("test_org")
+            result = client._public_repos_url
+
+            self.assertEqual(result, "https://someurl.com/org/repos")
+
+class TestGithubOrgClient(unittest.TestCase):
     """
     Class tests GithubOrgClient class
     """
@@ -32,21 +46,18 @@ class TestGithubOrgClient(unittest.TestCase):
             "https://api.github.com/orgs/{}".format(org)
         )
 
-    def test_public_repos_url(self) -> None:
-        """
-        Tests the '_public_repos_url' property
-        """
-        with patch(
-                "client.GithubOrgClient.org",
-                new_callable=PropertyMock,
-                ) as mock_org:
-            mock_org.return_value = {
-                'repos_url': "https://api.github.com/users/google/repos",
-            }
-            self.assertEqual(
-                GithubOrgClient("google")._public_repos_url,
-                "https://api.github.com/users/google/repos",
-            )
+    def test_public_repos_url(self):
+        """Define the fake payload to return"""
+        test_payload = {"repos_url": "https://someurl.com/org/repos"}
+
+        with patch.object(
+            GithubOrgClient, 'org', new_callable=PropertyMock) as mock_org:
+            mock_org.return_value = test_payload
+
+            client = GithubOrgClient("test_org")
+            result = client._public_repos_url
+
+            self.assertEqual(result, "https://someurl.com/org/repos")
 
     @patch("client.get_json")
     def test_public_repos(self, mock_get_json: MagicMock) -> None:
