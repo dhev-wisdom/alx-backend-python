@@ -17,6 +17,10 @@ class User(AbstractUser):
     #     self.password = make_password(self.password)
     #     super().save(*args, **kwargs)
 
+    @property
+    def id(self):
+        return self.user_id
+
     def __str__(self):
         """define the string representation of the custom `User` model"""
         return self.username

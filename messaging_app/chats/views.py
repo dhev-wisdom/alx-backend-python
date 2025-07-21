@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from .models import User, Conversation, Message
 from .serializers import UserSerializer, MessageSerializer, ConversationSerializer
+from .permissions import IsOwner
 
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
@@ -13,7 +14,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
     
 
 class ConversationViewSet(viewsets.ModelViewSet):
@@ -24,6 +25,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
     """
     serializer_class = ConversationSerializer
     queryset = Conversation.objects.all()
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     def create(self, request, *args, **kwargs):
         """
@@ -50,6 +52,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     API endpoint for managing messages.
     Allows listing messages and sending a new message to an existing conversation.
     """
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
     serializer_class = MessageSerializer
     queryset = Message.objects.all()
     filter_backends = [filters.SearchFilter]
