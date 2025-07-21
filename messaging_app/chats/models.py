@@ -20,6 +20,9 @@ class User(AbstractUser):
     @property
     def id(self):
         return self.user_id
+    
+    class Meta:
+        ordering = ['-created_at']
 
     def __str__(self):
         """define the string representation of the custom `User` model"""
@@ -39,6 +42,9 @@ class Conversation(models.Model):
         """define the string representation of the `Conversation` model"""
         usernames = (", ").join(User.username for User in self.participants.all())
         return f"Conversation bertween {usernames}"
+    
+    class Meta:
+        ordering = ['-created_at']
 
 
 class Message(models.Model):
@@ -57,4 +63,7 @@ class Message(models.Model):
     def __str__(self):
         """define the string representation of the `Message` model"""
         return f"{self.sender.username} - {self.message_body[:15]}"
+    
+    class Meta:
+        ordering = ['-sent_at']
     
