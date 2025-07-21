@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from .models import User, Conversation, Message
 from .serializers import UserSerializer, MessageSerializer, ConversationSerializer
 from .permissions import IsOwner, IsParticipantOfConversation
+from .pagination import MessageResultSetPagination
 
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
@@ -54,6 +55,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     """
     permission_classes = [permissions.IsAuthenticated, IsParticipantOfConversation]
     serializer_class = MessageSerializer
+    pagination_class = MessageResultSetPagination
     queryset = Message.objects.all()
     filter_backends = [filters.SearchFilter]
 
