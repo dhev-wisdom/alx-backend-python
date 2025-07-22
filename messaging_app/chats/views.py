@@ -6,6 +6,8 @@ from .models import User, Conversation, Message
 from .serializers import UserSerializer, MessageSerializer, ConversationSerializer
 from .permissions import IsOwner, IsParticipantOfConversation
 from .pagination import MessageResultSetPagination
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import MessageFilter
 
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
@@ -57,7 +59,8 @@ class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
     pagination_class = MessageResultSetPagination
     queryset = Message.objects.all()
-    filter_backends = [filters.SearchFilter]
+    # filter_backends = [DjangoFilterBackend]
+    # filterset_class = MessageFilter
 
     def perform_create(self, serializer):
         conversation = serializer.validated_data.get("conversation")
