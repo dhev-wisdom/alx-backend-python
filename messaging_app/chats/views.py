@@ -59,8 +59,8 @@ class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
     pagination_class = MessageResultSetPagination
     queryset = Message.objects.all()
-    # filter_backends = [DjangoFilterBackend]
-    # filterset_class = MessageFilter
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MessageFilter
 
     def perform_create(self, serializer):
         conversation = serializer.validated_data.get("conversation")
