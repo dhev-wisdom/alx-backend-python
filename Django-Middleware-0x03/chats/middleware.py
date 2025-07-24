@@ -29,15 +29,16 @@ class RequestLoggingMiddleware:
         self.log_file_path = os.path.join(settings.BASE_DIR, "requests.logs")
 
     def __call__(self, request):
+        response = self.get_response(request)
         user = request.user if request.user.is_authenticated else "Anonymous"
         log_message = f"{datetime.now()} - User: {user} - Path: {request.path}"
         print(log_message)
+        print("Request header: ", request.headers)
         try:
             with open(self.log_file_path, 'a') as f:
                 f.write(log_message + "\n")
         except Exception as e:
             print(f"Error: {e}\nCoundn't log request information to {self.log_file_path}")
         
-        response = self.get_response(request)
 
         return response

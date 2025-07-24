@@ -54,8 +54,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'chats.middleware.RequestTimerMiddleware',
     'chats.middleware.RequestLoggingMiddleware',
+    'chats.middleware.RequestTimerMiddleware',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -76,6 +76,8 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=59),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    # "USER_ID_FIELD": "user_id", # Uncomment these two lines
+    # "USER_ID_CLAIM": "user_id", # if you wish to use default (commented) JWTAuth
 }
 
 ROOT_URLCONF = 'messaging_app.urls'
