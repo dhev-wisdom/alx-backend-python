@@ -4,6 +4,12 @@ from django.contrib.auth.hashers import make_password
 from django.utils import timezone
 import uuid
 
+ROLE_CHOICES = (
+        ('admin', 'Admin'),
+        ('moderator', 'Moderator'),
+        ('user', 'User'),
+    )
+
 class User(AbstractUser):
     """custom `User` class defined off of django default user `AbstractUser`"""
     user_id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
@@ -11,6 +17,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=15)
     created_at = models.DateTimeField(auto_now_add=True)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='user')
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 

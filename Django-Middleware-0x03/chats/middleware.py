@@ -103,3 +103,30 @@ class OffensiveLanguageMiddleware:
         if x_forwarded_for:
             return x_forwarded_for.split(',')[0].strip()
         return request.META.get("REMOTE_ADDR")
+    
+
+class RolepermissionMiddleware:
+    """
+    Middleware checks users' role before allowing access to certain actions
+    """
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+
+        protected_paths = [
+            # '/api/messages/',
+            # '/api/conversations/messages/', 
+            # '/admin/', # append relevant routes
+        ]
+
+        if any(request.path.startswith(path) for path in protected_paths):
+            user = request.user
+            if not user.is_authenticated():
+                raise PermissionDenied("User is not Authenticated")
+            
+            if not hasattr(user, 'role') or user.role not in ['admin', 'moderator']:
+                raise PermissionDenied("You do not have permission to access this recource")
+            
+        return response
