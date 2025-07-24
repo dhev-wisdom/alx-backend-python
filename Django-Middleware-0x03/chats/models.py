@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.hashers import make_password
+from django.utils import timezone
 import uuid
 
 class User(AbstractUser):
@@ -66,4 +67,12 @@ class Message(models.Model):
     
     class Meta:
         ordering = ['-sent_at']
+
+
+class MessageRequestLog(models.Model):
+    """
+    MessageRequestLog model stores visitors' data to track offensive messages or spam
+    """
+    ip_address = models.GenericIPAddressField()
+    timestamp = models.DateTimeField(default=timezone.now)
     

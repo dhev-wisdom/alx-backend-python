@@ -1,9 +1,11 @@
 import os
 import time
-from datetime import datetime
+from collections import defaultdict
+from datetime import datetime, timedelta
 from django.conf import settings
 from django.utils import timezone
 from rest_framework.exceptions import PermissionDenied
+from .models import MessageRequestLog
 
 class RequestTimerMiddleware:
     """Middleware that logs the time taken by each request"""
@@ -35,7 +37,7 @@ class RequestLoggingMiddleware:
         user = request.user if request.user.is_authenticated else "Anonymous"
         log_message = f"{datetime.now()} - User: {user} - Path: {request.path}"
         print(log_message)
-        print("Request header: ", request.headers)
+        # print("Request header: ", request.headers)
         try:
             with open(self.log_file_path, 'a') as f:
                 f.write(log_message + "\n")
@@ -64,3 +66,40 @@ class RestrictAccessByTimeMiddleware:
             else:
                 raise PermissionDenied("You are accessing this chat outside of allowed time")
         return response
+    
+class OffensiveLanguageMiddleware:
+    """
+    Middleware detects and blocks offensive languages or spam
+    """
+    def __init__(self, get_response):
+        self.get_response = get_response
+    
+    def __call__(self, request):
+        response = self.get_response(request)
+
+        if (request.method == 'POST' and
+            (request.path.startswith('/api/conversations/') or 
+                                     request.path.startswith('/api/messages/'))):
+            ip = self.get_client_ip_addr(request)
+            now = timezone.now()
+            time_since = now - timedelta(seconds=60)
+
+            print(f"time_since: {time_since}")
+
+            recent_logs = MessageRequestLog.objects.filter(ip_address=ip,
+                                                           timestamp__gte=time_since)
+            
+            if recent_logs.count() >= 5:
+                raise PermissionDenied("Rate limiting exceeded. You can send max 5 messages in 1 minute")
+
+            print(f"Rate limit check before append: {recent_logs}")
+
+            MessageRequestLog.objects.create(ip_address=ip, timestamp=now)
+        return response
+
+    def get_client_ip_addr(self, request):
+        """get client ip address"""
+        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+        if x_forwarded_for:
+            return x_forwarded_for.split(',')[0].strip()
+        return request.META.get("REMOTE_ADDR")
