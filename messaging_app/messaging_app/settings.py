@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'chats',
     'django_filters',
+    'oauth2_provider',
 ]
 
 MIDDLEWARE = [
@@ -65,6 +66,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework_simplejwt.authentication.JWTAuthentication',
         'chats.auth.CustomJWTAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
     ],
     'DJANGO_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',

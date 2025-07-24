@@ -13,4 +13,5 @@ urlpatterns = [
     path('api/token/verify', TokenVerifyView.as_view(), name='token_verify'),
     path('api/', include("chats.urls")),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),  # OAuth2 routes
 ]
