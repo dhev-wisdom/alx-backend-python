@@ -26,7 +26,7 @@ class RequestLoggingMiddleware:
     """
     def __init__(self, get_response):
         self.get_response = get_response
-        self.log_file_path = os.path.join(settings.BASE_DIR, "request.logs")
+        self.log_file_path = os.path.join(settings.BASE_DIR, "requests.logs")
 
     def __call__(self, request):
         user = request.user if request.user.is_authenticated else "Anonymous"
