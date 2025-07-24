@@ -27,7 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
             username = f"{base}{User.objects.count()}"
             if not User.objects.filter(username=username).exists():
                 return username
-            
+
 
 class MessageSerializer(serializers.ModelSerializer):
     """

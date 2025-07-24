@@ -18,15 +18,15 @@ class IsOwner(permissions.BasePermission):
         return getattr(obj, 'user', None)
     
 class IsParticipantOfConversation(permissions.BasePermission):
-     """
+    """
     Custom permission:
     - Only allow authenticated users.
     - Only allow participants of the conversation to send, view, update, or delete messages.
     """
-     def has_permission(self, request, view):
+    def has_permission(self, request, view):
         return request.user and request.user.is_authenticated
-     
-     def has_object_permission(self, request, view, obj):
+    
+    def has_object_permission(self, request, view, obj):
         if request.method in ["PUT", "PATCH", 'DELETE', "GET"]:
             if hasattr(obj, 'conversation'):
                 return request.user in obj.conversation.participants.all()
