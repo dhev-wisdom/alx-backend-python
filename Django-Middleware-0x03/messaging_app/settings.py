@@ -54,6 +54,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'chats.middleware.RequestTimerMiddleware',
+    'chats.middleware.RequestLoggingMiddleware',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
