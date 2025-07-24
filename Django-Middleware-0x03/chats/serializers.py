@@ -73,7 +73,11 @@ class ConversationSerializer(serializers.ModelSerializer):
     that can be read by the frontend
     """
     messages = MessageSerializer(many = True)
-    participants = UserSerializer(many = True)
+    # participants = UserSerializer(many = True)
+    participants = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(),
+        many=True
+    )
     message_count = serializers.SerializerMethodField()
 
     def get_message_count(self, obj):
@@ -81,5 +85,6 @@ class ConversationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Conversation
-        fields = ['conversation_id', 'messages', 'participants', 'created_at', 'message_count']
+        # fields = ['conversation_id', 'messages', 'participants', 'created_at', 'message_count']
+        fields = '__all__'
 

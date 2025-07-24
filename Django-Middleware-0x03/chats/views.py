@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, status, filters, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from .models import User, Conversation, Message
 from .serializers import UserSerializer, MessageSerializer, ConversationSerializer
 from .permissions import IsOwner, IsParticipantOfConversation
@@ -39,15 +40,47 @@ class ConversationViewSet(viewsets.ModelViewSet):
         """
         participants_id = request.data.get('participants')
         if not participants_id or not isinstance(participants_id, list):
-            return Response({"error": "participants must be a list of user IDs"})
+            raise ValidationError("participants must be a list of user IDs")
         participants = User.objects.filter(user_id__in=participants_id)
         if participants.count() != len(participants_id):
-            return Response({"error": "Some participants were not found"}, status=404)
+            raise ValidationError("Some participants were not found")
         
         conversation = Conversation.objects.create()
         conversation.participants.set(participants)
         serializer = self.get_serializer(conversation)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def update(self, request, *args, **kwargs):
+        """Handles full updates (PUT)"""
+        instance = self.get_object()
+        participants_id = request.data.get('participants')
+        if not participants_id or not isinstance(participants_id, list):
+            raise ValidationError("participants must be a list of user IDs")
+
+        participants = User.objects.filter(user_id__in=participants_id)
+        if participants.count() != len(participants_id):
+            raise ValidationError("Some participants were not found")
+
+        instance.participants.set(participants)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def partial_update(self, request, *args, **kwargs):
+        """Handles partial updates (PATCH)"""
+        instance = self.get_object()
+        participants_id = request.data.get('participants')
+        if participants_id:
+            if not isinstance(participants_id, list):
+                raise ValidationError("participants must be a list of user IDs")
+
+            participants = User.objects.filter(user_id__in=participants_id)
+            if participants.count() != len(participants_id):
+                raise ValidationError("Some participants were not found")
+
+            instance.participants.set(participants)
+
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class MessageViewSet(viewsets.ModelViewSet):
@@ -65,8 +98,9 @@ class MessageViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         conversation = serializer.validated_data.get("conversation")
         if self.request.user not in conversation.participants.all():
-            return Response({"detail": "You are not a part of this conversation"},
-                            status=status.HTTP_403_FORBIDDEN)
+            raise PermissionDenied("You are not a part of this conversation")
+            # return Response({"detail": "You are not a part of this conversation"},
+            #                 status=status.HTTP_403_FORBIDDEN)
         serializer.save(sender=self.request.user)
         
     def get_queryset(self):
