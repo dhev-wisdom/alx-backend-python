@@ -2,6 +2,8 @@ import os
 import time
 from datetime import datetime
 from django.conf import settings
+from django.utils import timezone
+from rest_framework.exceptions import PermissionDenied
 
 class RequestTimerMiddleware:
     """Middleware that logs the time taken by each request"""
@@ -41,4 +43,24 @@ class RequestLoggingMiddleware:
             print(f"Error: {e}\nCoundn't log request information to {self.log_file_path}")
         
 
+        return response
+    
+class RestrictAccessByTimeMiddleware:
+    """
+    Middleware  that check the current server time
+    and deny access by returning an error 403 Forbidden
+    """
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        current_server_time = timezone.now()
+        current_hour = timezone.localtime(current_server_time).hour
+        if (request.path.startswith('/api/conversations/') or 
+        request.path.startswith('/api/messages/')):
+            if 18 <= current_hour < 21:
+                return response
+            else:
+                raise PermissionDenied("You are accessing this chat outside of allowed time")
         return response
