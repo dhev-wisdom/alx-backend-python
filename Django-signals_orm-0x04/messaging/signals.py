@@ -6,7 +6,11 @@ from django.dispatch import receiver
 def create_notification(sender, created, instance, **kwargs):
     """signal to automatically create notification when a new message is received"""
     if created:
-        Notification.objects.create(user=instance.receiver, message=instance)
+        Notification.objects.create(
+            user=instance.receiver,
+            message=instance,
+            content=instance.content
+        )
 
 @receiver(pre_save, sender=Message)
 def update_message_logs(sender, instance, **kwargs):
@@ -18,7 +22,13 @@ def update_message_logs(sender, instance, **kwargs):
                 instance.edited = True
                 MessageHistory.objects.create(
                     message=old_message,
-                    old_content=old_message.content
+                    old_content=old_message.content,
+                    edited_by=getattr(instance, '_edited_by', old_message.sender)
+                )
+                Notification.objects.create(
+                    user=instance.receiver,
+                    message=instance,
+                    content=instance.content
                 )
         except Message.DoesNotExist:
             pass
