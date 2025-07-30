@@ -1,6 +1,9 @@
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save, pre_save, post_delete
 from .models import Message, Notification, MessageHistory
 from django.dispatch import receiver
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 @receiver(post_save, sender=Message)
 def create_notification(sender, created, instance, **kwargs):
@@ -32,3 +35,9 @@ def update_message_logs(sender, instance, **kwargs):
                 )
         except Message.DoesNotExist:
             pass
+
+@receiver(post_delete, sender=User)
+def cleanup_user_data(sender, instance, **kwargs):
+    """signals cleans up all trace of user data on delete"""
+    Notification.objects.filter(user=instance).delete()
+    MessageHistory.objects.filter(edited_by=instance).delete()
