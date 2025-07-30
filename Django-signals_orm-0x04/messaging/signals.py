@@ -41,3 +41,5 @@ def cleanup_user_data(sender, instance, **kwargs):
     """signals cleans up all trace of user data on delete"""
     Notification.objects.filter(user=instance).delete()
     MessageHistory.objects.filter(edited_by=instance).delete()
+    Message.objects.filter(sender=instance).delete()
+    Message.objects.filter(receiver=instance).delete()

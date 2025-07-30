@@ -3,10 +3,18 @@ from rest_framework import generics, permissions, viewsets
 from django.contrib.auth import get_user_model
 from .serializer import MessageSerializer, NotificationSerializer, MessageHistorySerializer
 from .models import Message, Notification, MessageHistory
+from django.contrib.auth.decorators import login_required
 
 User = get_user_model()
 
 # Create your views here.
+@login_required
+def delete_user(request):
+    user = request.user()
+    user.delete()
+    return
+
+
 class DeleteUserView(generics.DestroyAPIView):
     queryset = User.objects.all()
     permission_classes = [permissions.IsAuthenticated]
