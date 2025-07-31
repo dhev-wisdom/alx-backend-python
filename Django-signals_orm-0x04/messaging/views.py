@@ -14,7 +14,15 @@ def delete_user(request):
     user.delete()
     return
 
-
+def get_thread(message):
+    """Recurcively get a message and all it's replies"""
+    replies = message.replies.all().select_related("sender", "receiver")
+    return {
+        "id": message.id,
+        "content": message.content,
+        "sender": message.sender.username,
+        "replies": [get_thread(reply) for reply in replies]
+    }
 class DeleteUserView(generics.DestroyAPIView):
     queryset = User.objects.all()
     permission_classes = [permissions.IsAuthenticated]
