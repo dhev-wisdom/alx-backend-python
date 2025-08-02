@@ -8,6 +8,8 @@ from .serializers import UserSerializer, MessageSerializer, ConversationSerializ
 from .permissions import IsOwner, IsParticipantOfConversation
 from .pagination import MessageResultSetPagination
 from django_filters.rest_framework import DjangoFilterBackend
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from .filters import MessageFilter
 
 # Create your views here.
@@ -30,6 +32,14 @@ class ConversationViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated, IsParticipantOfConversation]
     serializer_class = ConversationSerializer
     queryset = Conversation.objects.all()
+
+    @method_decorator(cache_page(60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+    
+    @method_decorator(cache_page(60))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         """
