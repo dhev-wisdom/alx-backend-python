@@ -26,7 +26,7 @@ def get_thread(message):
 
 def inbox(request):
     user = request.user
-    unread = Message.unread.for_user(user)
+    unread = Message.filter(receiver=user, edited=False).unread_for_user(user)
     return
 
 
@@ -35,9 +35,9 @@ class UnreadMessagesView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Message.unread.for_user(self.request.user)
+        return Message.unread.unread_for_user(self.request.user)
     
-    
+
 class DeleteUserView(generics.DestroyAPIView):
     queryset = User.objects.all()
     permission_classes = [permissions.IsAuthenticated]
