@@ -26,7 +26,7 @@ def get_thread(message):
 
 def inbox(request):
     user = request.user
-    unread = Message.filter(receiver=user, edited=False).only(
+    unread = Message.objects.filter(receiver=user, edited=False).only(
             "id", "sender", "receiver", "content", "timestamp"
         )
     return
