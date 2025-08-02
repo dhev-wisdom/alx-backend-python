@@ -4,6 +4,13 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+class UnreadMessagesManager(models.Manager):
+    """Custom manager to filter unread messages for a user"""
+    def for_user(self, user):
+        return self.get_queryset().filter(receiver=user, edited=False).only(
+            "id", "sender", "receiver", "content", "timestamp"
+        )
+
 class Message(models.Model):
     """Message Model"""
     sender = models.ForeignKey(User, related_name="sent_messages", on_delete=models.CASCADE)
@@ -13,6 +20,9 @@ class Message(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     edited = models.BooleanField(default=False)
     is_read = models.BooleanField(default=False)
+
+    objects = models.Manager()
+    unread = UnreadMessagesManager()
 
     class Meta:
         verbose_name_plural = "Messages"

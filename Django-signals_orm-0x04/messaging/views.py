@@ -23,6 +23,21 @@ def get_thread(message):
         "sender": message.sender.username,
         "replies": [get_thread(reply) for reply in replies]
     }
+
+def inbox(request):
+    user = request.user
+    unread = Message.unread.for_user(user)
+    return
+
+
+class UnreadMessagesView(generics.ListAPIView):
+    serializer_class = MessageSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Message.unread.for_user(self.request.user)
+    
+    
 class DeleteUserView(generics.DestroyAPIView):
     queryset = User.objects.all()
     permission_classes = [permissions.IsAuthenticated]
