@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: messaging-app
-          image: wisdom62/messaging-app
+          image: wisdom62/messaging-app:1.0
           ports:
             - containerPort: 8000
           env:

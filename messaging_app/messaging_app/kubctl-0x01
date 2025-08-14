@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+kubectl scale deployment messaging-app-deployment --replicas=3
+
+echo "Waiting for pods to be ready..."
+
+kubectl rollout status deployment messaging-app-deployment
+
+kubectl get pods
+
+echo "Running load test..."
+
+wrk -t4 -c100 -d30 http://$(minikube ip):30000/ \
+	|| docker run --rm williamyeh/wrk -t4 -c100 -d30s http://$(minikube ip):30000/
+
+kubectl top pods
