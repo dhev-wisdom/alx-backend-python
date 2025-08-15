@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# Step 1: Apply the updated deployment
+echo "Applying updated blue deployment..."
+kubectl apply -f blue_deployment.yaml
+
+# Step 2: Monitor rollout progress
+echo "Monitoring rollout status..."
+kubectl rollout status deployment/messaging-app-deployment
+
+# Step 3: Test for downtime during rollout
+echo "Testing application availability during rollout..."
+for i in {1..20}
+do
+    curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8000/api/
+    sleep 2
+done
+
+# Step 4: Check pods after rollout
+echo "Current pods:"
+kubectl get pods -o wide
