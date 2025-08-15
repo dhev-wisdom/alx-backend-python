@@ -1,0 +1,14 @@
+# kubeservice.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: messaging-service
+spec:
+  selector:
+    app: messaging
+    version: blue  # start with blue
+  ports:
+    - port: 80
+      targetPort: 8000
+      nodePort: 30000
+  type: NodePort
