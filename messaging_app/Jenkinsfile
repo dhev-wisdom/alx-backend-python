@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-cred') // store in Jenkins
+        GITHUB_CREDENTIALS = credentials('github-cred')       // store in Jenkins
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main',
+                    credentialsId: "${GITHUB_CREDENTIALS}",
+                    url: 'https://github.com/dhev-wisdom/alx-backend-python.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'pip install -r requirements.txt'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'pytest messaging_app/ --maxfail=1 --disable-warnings -q --cov=messaging_app'
+            }
+        }
+
+        stage('Lint Code') {
+            steps {
+                sh 'flake8 messaging_app/'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t messaging-app:1.0'
+            }
+        }
+
+        stage('Push to DockerHub') {
+            steps {
+                withDockerRegistry([ credentialsId: "${DOCKERHUB_CREDENTIALS}", url: "" ]) {
+                    sh 'docker tag messaging-app:1.0 wisdom62/messaging-app:1.0'
+                    sh 'docker push wisdom62/messaging-app:1.0'
+                }
+            }
+        }
+    }
+}
